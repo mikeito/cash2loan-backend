@@ -24,9 +24,10 @@ public class Post {
     private String title;
     private String description;
     private String image_path;  // make nullable
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private AppUser user;
+
     private Date created_at;
     private Date updated_at;
 }

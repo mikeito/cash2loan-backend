@@ -30,7 +30,9 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 public class AppUserController {
     private final AppUserService appUserService;
@@ -42,14 +44,15 @@ public class AppUserController {
 
     @PostMapping("/user/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
+//        return ResponseEntity.ok().body(appUser);
 //        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/save").toUriString());
-        return ResponseEntity.created(Utilities.Util_uri("api/user/save")).body(appUserService.saveUser(appUser));
+        return ResponseEntity.created(Utilities.Util_uri("api/v1/user/save")).body(appUserService.saveUser(appUser));
     }
 
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
 //        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/role/save").toUriString());
-        return ResponseEntity.created(Utilities.Util_uri("api/role/save")).body(appUserService.saveRole(role));
+        return ResponseEntity.created(Utilities.Util_uri("api/v1/role/save")).body(appUserService.saveRole(role));
     }
 
     @PostMapping("/role/addtouser")
