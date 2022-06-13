@@ -21,10 +21,12 @@ public class PostServiceImplementation implements PostService{
 
     @Override
     public Post savePost(Post post) {
-        log.info("Saving new post {} to db", post.getTitle());
+//        log.info("Saving new post {} to db", post.getTitle());
         post.setCreated_at(Date.valueOf(LocalDate.now()));
         post.setUpdated_at(Date.valueOf(LocalDate.now()));
-        return postRepository.save(post);
+        log.info("Saving new post {} to db", post);
+        return post;
+//        return postRepository.save(post);
     }
 
     @Override
