@@ -31,8 +31,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api/v1")
-//@CrossOrigin(origins = "http://localhost:3000")
-@CrossOrigin(value = "http://localhost:3000")
+//@CrossOrigin(origins = "*")
+//@CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 public class AppUserController {
     private final AppUserService appUserService;

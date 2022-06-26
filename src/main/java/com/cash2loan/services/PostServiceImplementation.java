@@ -25,8 +25,8 @@ public class PostServiceImplementation implements PostService{
         post.setCreated_at(Date.valueOf(LocalDate.now()));
         post.setUpdated_at(Date.valueOf(LocalDate.now()));
         log.info("Saving new post {} to db", post);
-        return post;
-//        return postRepository.save(post);
+//        return post;
+        return postRepository.save(post);
     }
 
     @Override

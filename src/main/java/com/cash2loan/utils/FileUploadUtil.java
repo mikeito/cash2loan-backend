@@ -2,8 +2,7 @@ package com.cash2loan.utils;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,5 +18,14 @@ public class FileUploadUtil {
         } catch (IOException ioException) {
             throw new IOException("Error saving upload image: "+ fileName, ioException);
         }
+    }
+
+    public static String getResource(String fileName) throws FileNotFoundException {
+        Path path = Paths.get("uploaded-images");
+        String fullPath = path+ File.separator+fileName;
+        return fullPath;
+//        InputStream fs = new FileInputStream(fullPath);
+//        return fs;
+
     }
 }

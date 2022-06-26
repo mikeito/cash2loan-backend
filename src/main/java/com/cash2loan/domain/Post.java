@@ -1,5 +1,7 @@
 package com.cash2loan.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +26,15 @@ public class Post {
     private String title;
     private String description;
     private String image_path;  // make nullable
+
+    @Column(name = "user_id")
+    private int userid;
+
+//    private String url_path;
+
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private AppUser user;
 
     private Date created_at;

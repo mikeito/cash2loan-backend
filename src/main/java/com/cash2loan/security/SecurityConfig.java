@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // override default /login endpoint to api/login
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.csrf().disable();
+        http.cors();    // this excludes the preflight requests from authorization. hence send status code 200
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         // make this route available without auth
         http.authorizeHttpRequests().antMatchers("/api/v1/login", "/api/v1/token/refresh/**").permitAll();
