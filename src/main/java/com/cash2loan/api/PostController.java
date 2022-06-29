@@ -1,6 +1,8 @@
 package com.cash2loan.api;
 
+import com.cash2loan.domain.AppUser;
 import com.cash2loan.domain.Post;
+import com.cash2loan.services.AppUserService;
 import com.cash2loan.services.PostService;
 import com.cash2loan.utils.FileUploadUtil;
 import com.cash2loan.utils.Utilities;
@@ -28,11 +30,10 @@ import java.util.UUID;
 @Slf4j
 public class PostController {
     private final PostService postService;
+    private final AppUserService appUserService;
 
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> getPosts() {
-//        List<Post> post = postService.getPosts();
-//        post.
         return ResponseEntity.ok().body(postService.getPosts());
     }
 
@@ -41,7 +42,7 @@ public class PostController {
     public ResponseEntity<?> savePost(
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam Integer user_id,
+            @RequestParam String email,
             @RequestParam("image_path") MultipartFile multipartFile
     ) throws IOException {
 //        File resource = new ClassPathResource("public/uploaded-images/ejara.png").getFile();
@@ -49,6 +50,8 @@ public class PostController {
 //        String text = resource.getAbsolutePath();
 //        String uploadDirectory = Paths.get("uploaded-images").toRealPath().toString();
 //        return ResponseEntity.ok().body("file:///"+uploadDirectory);
+        AppUser appUser = appUserService.getUser(email);
+        int user_id = Math.toIntExact(appUser.getId());
 
         Post post = new Post();
         post.setTitle(title);
@@ -71,13 +74,36 @@ public class PostController {
     // Update
     @PutMapping("/post/{id}")
     public ResponseEntity<Post> updatePost(
-            @PathVariable Long id,
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam Integer user_id,
-            @RequestParam("image_path") MultipartFile multipartFile
-            )
-    {
+        @PathVariable Long id,
+        @RequestParam String title,
+        @RequestParam String description,
+        @RequestParam String email,
+//        @RequestParam String old_image_path,
+        @RequestParam(value = "image_path", required = false) MultipartFile multipartFile
+    ) throws IOException {
+        AppUser appUser = appUserService.getUser(email);
+        int user_id = Math.toIntExact(appUser.getId());
+//        String fileName;
+//        Post post = new Post();
+        Post post = postService.getPost(id);
+        post.setTitle(title);
+        post.setDescription(description);
+//        post.setUserid(user_id);
+
+//        if(!multipartFile.isEmpty()) {
+        if(multipartFile != null) {
+            if(!multipartFile.isEmpty()) {
+                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                String randomUID = UUID.randomUUID().toString();
+                String newFileName = randomUID.concat(fileName.substring(fileName.lastIndexOf(".")));
+
+                FileUploadUtil.saveFile(newFileName, multipartFile);
+
+                post.setImage_path(newFileName);
+            }
+        }
+
+//        post.setImage_path(old_image_path);
         log.info("*********ID is: {}", id);
         log.info("*********Data is: {}", title);
         return ResponseEntity.ok(postService.updatePost(id, post));
@@ -93,8 +119,16 @@ public class PostController {
 
     // delete method
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<HttpStatus> deletePost(@RequestBody Post post) {
-        postService.deletePost(post.getId());
+    public ResponseEntity<HttpStatus> deletePost(@PathVariable Long id) throws IOException {
+        Post post = postService.getPost(id);
+
+
+
+//        Files.createFile(Paths.get("src/test/resources/fileToDelete_jdk7.txt"));
+        Files.delete(Paths.get("uploaded-images/"+post.getImage_path()));
+//        Path fileToDeletePath = Paths.get("src/test/resources/fileToDelete_jdk7.txt");
+//        Files.delete(fileToDeletePath);
+        postService.deletePost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

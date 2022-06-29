@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager());
-        // override default /login endpoint to api/login
+        // override default /login endpoint to api/v1/login
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.csrf().disable();
         http.cors();    // this excludes the preflight requests from authorization. hence send status code 200

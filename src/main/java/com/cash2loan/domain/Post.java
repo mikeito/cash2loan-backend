@@ -21,20 +21,24 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class Post {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Long id;
     @Column(unique = true, nullable = true)
     private String title;
     private String description;
+
+    @Column(nullable = true)
     private String image_path;  // make nullable
 
     @Column(name = "user_id")
     private int userid;
 
-//    private String url_path;
-
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinTable(name = "response_user",
+                joinColumns = {@JoinColumn(name = "post_id")},
+                inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private AppUser user;
 
     private Date created_at;

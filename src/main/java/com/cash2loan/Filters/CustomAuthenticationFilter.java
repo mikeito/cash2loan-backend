@@ -46,24 +46,26 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
 //        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        // 2 min access token
+        // 60 min * 24 = 1440 ie 1 day access token
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1440 * 60 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(Util_algorithm);
-        // 30 min refresh token
+        // 2 days refresh token
         String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 2880 * 60 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(Util_algorithm);
 
 //        response.setHeader("access_token", access_token);
 //        response.setHeader("refresh_token", refresh_token);
-        Map<String, String> userData = new HashMap<>();
-        userData.put("user", String.valueOf(user));
+//        Map<String, String> userData = new HashMap<>();
+        Map userData = new HashMap<>();
+//        userData.put("user", String.valueOf(user));
+        userData.put("user", user);
         userData.put("access_token", access_token);
         userData.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);

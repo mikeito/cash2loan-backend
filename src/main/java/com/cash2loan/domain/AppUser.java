@@ -1,5 +1,6 @@
 package com.cash2loan.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class AppUser {
     @NotNull
     private String password;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 

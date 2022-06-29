@@ -27,8 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @SneakyThrows
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String uploadDirectory = "file:///C:/Users/mike%20ito/Documents/springboot%20projects/cash2loan/uploaded-images/";
+//        String uploadDirectory = "file:///C:/Users/mike%20ito/Documents/springboot%20projects/cash2loan/uploaded-images/";
 //        String uploadDirectory = Paths.get("uploaded-images").toRealPath().toString();
+        String uploadDirectory = Paths.get("uploaded-images").toUri().toString();
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations(uploadDirectory);

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cash2loan.domain.AppUser;
+import com.cash2loan.domain.Post;
 import com.cash2loan.domain.Role;
 import com.cash2loan.services.AppUserService;
 import com.cash2loan.utils.RoleToUserForm;
@@ -42,6 +43,11 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.getUsers());
     }
 
+    @GetMapping("/user/{email}")
+    public ResponseEntity<AppUser> getUser(@PathVariable String email) {
+        return ResponseEntity.ok(appUserService.getUser(email));
+    }
+
     @PostMapping("/user/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
 //        return ResponseEntity.ok().body(appUser);
@@ -72,11 +78,11 @@ public class AppUserController {
                 String email = decodedJWT.getSubject();
                 AppUser appUser = appUserService.getUser(email);
 
-                // create new 2 min token
+                // create new 2 days token
                 String access_token = JWT.create()
-//                        .withSubject(user.getUsername())
+                        .withKeyId(String.valueOf(appUser.getId()))
                         .withSubject(appUser.getEmail())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 2880 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", appUser.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(Util_algorithm);
